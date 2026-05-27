@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Move Window</title>
+    <meta name="description" content="A local-first move-date checklist planner that turns one moving day into dated tasks.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2712%27%20fill%3D%27%232c6e63%27%2F%3E%3Cpath%20d%3D%27M15%2036h26v13H15zM23%2024h26v12H23z%27%20fill%3D%27%23f6d38b%27%2F%3E%3Cpath%20d%3D%27M20%2036v13M28%2024v12M36%2024v12M28%2036v13M37%2042h13v7H37z%27%20stroke%3D%27%2335211b%27%20stroke-width%3D%273%27%2F%3E%3C%2Fsvg%3E">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Local-first utility</p>
+        <h1>Move Window</h1>
+        <p class="lede">Pick a moving day, answer the small stuff, and get a dated checklist you can copy, print, or save.</p>
+      </div>
+      <svg class="moving-mark" viewBox="0 0 260 150" role="img" aria-label="Moving boxes and calendar">
+        <rect x="16" y="88" width="76" height="42" rx="5" fill="#e9b85f" stroke="#2d2d2a" stroke-width="4"/>
+        <rect x="48" y="58" width="76" height="72" rx="5" fill="#f2d28c" stroke="#2d2d2a" stroke-width="4"/>
+        <rect x="128" y="35" width="104" height="92" rx="10" fill="#fffaf0" stroke="#2d2d2a" stroke-width="4"/>
+        <path d="M128 56h104M153 25v20M207 25v20M65 58v72M16 108h76" stroke="#2d2d2a" stroke-width="4" stroke-linecap="round"/>
+        <path d="M148 77h18M178 77h18M208 77h10M148 99h18M178 99h18M208 99h10" stroke="#2c6e63" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="204" cy="111" r="22" fill="#d9573b" stroke="#2d2d2a" stroke-width="4"/>
+        <path d="M195 111l7 7 13-16" fill="none" stroke="#fffaf0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </header>
+
+    <main class="layout">
+      <section class="panel controls" aria-label="Plan controls">
+        <div class="panel-heading">
+          <h2>Move facts</h2>
+          <div class="button-row">
+            <button type="button" class="ghost" id="sample-button">Sample</button>
+            <button type="button" class="ghost" id="reset-button">Reset</button>
+          </div>
+        </div>
+
+        <form id="planner-form">
+          <label>
+            <span>Move date</span>
+            <input type="date" name="moveDate" required>
+          </label>
+
+          <div class="grid two">
+            <label>
+              <span>Move type</span>
+              <select name="moveType">
+                <option value="local">Local move</option>
+                <option value="long">Long-distance move</option>
+                <option value="downsizing">Downsizing</option>
+              </select>
+            </label>
+            <label>
+              <span>Home size</span>
+              <select name="homeSize">
+                <option value="studio">Studio / 1 room</option>
+                <option value="apartment">Apartment</option>
+                <option value="house">House</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="grid two">
+            <label>
+              <span>From</span>
+              <input name="fromName" autocomplete="off" placeholder="Current place">
+            </label>
+            <label>
+              <span>To</span>
+              <input name="toName" autocomplete="off" placeholder="New place">
+            </label>
+          </div>
+
+          <fieldset class="checkbox-grid">
+            <legend>Include extra tasks</legend>
+            <label><input type="checkbox" name="renting"> Renting / lease handoff</label>
+            <label><input type="checkbox" name="utilities" checked> Utilities and address changes</label>
+            <label><input type="checkbox" name="pets"> Pets</label>
+            <label><input type="checkbox" name="kids"> Kids / school</label>
+            <label><input type="checkbox" name="fragile"> Fragile items</label>
+            <label><input type="checkbox" name="elevator"> Elevator or loading dock booking</label>
+          </fieldset>
+
+          <label>
+            <span>Custom task</span>
+            <div class="inline-control">
+              <input id="custom-task" autocomplete="off" placeholder="Example: Photograph utility meters">
+              <select id="custom-offset" aria-label="Custom task timing">
+                <option value="-21">3 weeks before</option>
+                <option value="-14">2 weeks before</option>
+                <option value="-7">1 week before</option>
+                <option value="-3">3 days before</option>
+                <option value="-1">1 day before</option>
+                <option value="0">Move day</option>
+                <option value="1">1 day after</option>
+              </select>
+              <button type="button" id="add-custom-button">Add</button>
+            </div>
+          </label>
+
+          <label>
+            <span>Notes for the top of the plan</span>
+            <textarea name="notes" rows="4" placeholder="Mover contact, building rules, parking permit, box label scheme..."></textarea>
+          </label>
+        </form>
+      </section>
+
+      <section class="panel output" aria-label="Generated moving plan">
+        <div class="panel-heading">
+          <h2>Dated plan</h2>
+          <div class="button-row">
+            <button type="button" id="copy-button">Copy</button>
+            <button type="button" id="download-button">Download</button>
+            <button type="button" id="print-button">Print</button>
+          </div>
+        </div>
+
+        <div class="summary-strip" id="summary-strip" aria-live="polite"></div>
+        <div class="progress-shell" aria-label="Checklist progress">
+          <div id="progress-bar"></div>
+        </div>
+        <div id="timeline" class="timeline"></div>
+      </section>
+    </main>
+
+    <template id="phase-template">
+      <article class="phase-card">
+        <div class="phase-date">
+          <span class="phase-day"></span>
+          <strong></strong>
+          <small></small>
+        </div>
+        <ul></ul>
+      </article>
+    </template>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

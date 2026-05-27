@@ -1,0 +1,19 @@
+{
+  "name": "fun-20260527-b-move-window",
+  "version": "1.0.0",
+  "description": "Local-first move-date checklist planner.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check.mjs"
+  },
+  "keywords": [
+    "moving",
+    "checklist",
+    "planner",
+    "productivity",
+    "local-first"
+  ],
+  "author": "bte808",
+  "license": "MIT"
+}
