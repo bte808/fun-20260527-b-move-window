@@ -29,3 +29,10 @@ test("planner supports practical export and persistence actions", () => {
   assert.match(app, /navigator\.clipboard/);
   assert.match(app, /localStorage\.setItem/);
 });
+
+test("planner surfaces the next actionable checkpoint", () => {
+  assert.match(app, /function renderNextActions/);
+  assert.match(app, /Catch up/);
+  assert.match(app, /Next up/);
+  assert.match(app, /focusGroup\.tasks\.slice\(0, 3\)/);
+});

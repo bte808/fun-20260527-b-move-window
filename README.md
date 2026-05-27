@@ -18,6 +18,7 @@ Move Window does not copy another checklist verbatim. It uses its own compact ta
 - Include task packs for renting, utilities, pets, kids, fragile items, elevators, long-distance moves, downsizing, and larger homes.
 - Add custom tasks with a relative timing such as 2 weeks before or move day.
 - Check off progress and keep it in local browser storage.
+- See the overdue or next checkpoint at the top of the plan.
 - Copy the whole plan as Markdown.
 - Download the plan as a Markdown file.
 - Print a clean checklist.

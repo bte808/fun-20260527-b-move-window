@@ -5,6 +5,7 @@ const form = document.querySelector("#planner-form");
 const timeline = document.querySelector("#timeline");
 const summaryStrip = document.querySelector("#summary-strip");
 const progressBar = document.querySelector("#progress-bar");
+const nextActions = document.querySelector("#next-actions");
 const template = document.querySelector("#phase-template");
 const customTaskInput = document.querySelector("#custom-task");
 const customOffsetInput = document.querySelector("#custom-offset");
@@ -297,6 +298,7 @@ function render() {
     timeline.innerHTML = `<p class="empty-state">Choose a move date to build the plan.</p>`;
     summaryStrip.innerHTML = "";
     progressBar.style.width = "0";
+    nextActions.innerHTML = "";
     return;
   }
 
@@ -320,6 +322,7 @@ function render() {
     metric(overdue ? "Open overdue" : "Next checkpoint", overdue ? overdue.toString() : formatDate(next.dueDate))
   ].join("");
   progressBar.style.width = `${percent}%`;
+  renderNextActions(groups, moveDate, today);
 
   timeline.replaceChildren();
   for (const group of groups) {
@@ -361,6 +364,52 @@ function render() {
 
     timeline.append(node);
   }
+}
+
+function renderNextActions(groups, moveDate, today) {
+  const openGroups = groups
+    .map((group) => ({
+      ...group,
+      tasks: group.tasks.filter((task) => !state.completed[taskKey(task, group.dueDate)])
+    }))
+    .filter((group) => group.tasks.length);
+
+  if (!openGroups.length) {
+    nextActions.innerHTML = `
+      <section class="focus-panel complete" aria-label="Next actions">
+        <div>
+          <span class="status-pill">Done</span>
+          <h3>All checklist items are checked off.</h3>
+        </div>
+        <p>Reset the plan or add a custom task if a new moving detail appears.</p>
+      </section>
+    `;
+    return;
+  }
+
+  const overdueGroup = openGroups.find((group) => group.dueDate < today);
+  const focusGroup = overdueGroup || openGroups.find((group) => group.dueDate >= today) || openGroups[0];
+  const isOverdue = focusGroup.dueDate < today;
+  const shownTasks = focusGroup.tasks.slice(0, 3);
+  const remaining = focusGroup.tasks.length - shownTasks.length;
+  const taskList = shownTasks
+    .map((task) => `<li>${escapeHtml(task.text)}</li>`)
+    .join("");
+
+  nextActions.innerHTML = `
+    <section class="focus-panel ${isOverdue ? "overdue" : ""}" aria-label="Next actions">
+      <div class="focus-head">
+        <div>
+          <span class="status-pill">${escapeHtml(isOverdue ? "Catch up" : "Next up")}</span>
+          <h3>${escapeHtml(formatDate(focusGroup.dueDate))}</h3>
+          <p>${escapeHtml(relativeLabel(focusGroup.dueDate, moveDate))}</p>
+        </div>
+        <strong>${escapeHtml(String(focusGroup.tasks.length))} open</strong>
+      </div>
+      <ul class="focus-list">${taskList}</ul>
+      ${remaining ? `<p class="focus-more">+${escapeHtml(String(remaining))} more in this checkpoint</p>` : ""}
+    </section>
+  `;
 }
 
 function metric(label, value) {

@@ -14,10 +14,12 @@ const readme = contents.get("README.md");
 const checks = [
   [html.includes('id="planner-form"'), "planner form exists"],
   [html.includes('id="timeline"'), "timeline mount exists"],
+  [html.includes('id="next-actions"'), "next action mount exists"],
   [html.includes("./app.js"), "app script is referenced"],
   [html.includes("./styles.css"), "stylesheet is referenced"],
   [app.includes("baseTasks"), "task templates exist"],
   [app.includes("buildMarkdown"), "markdown export exists"],
+  [app.includes("renderNextActions"), "next action focus exists"],
   [app.includes("localStorage"), "local progress persistence exists"],
   [readme.includes("## Validation"), "README documents validation"],
   [readme.includes("Inspiration"), "README documents inspiration"]

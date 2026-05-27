@@ -278,6 +278,96 @@ textarea:focus {
   transition: width 0.2s ease;
 }
 
+.next-actions {
+  padding: 0 16px 16px;
+}
+
+.focus-panel {
+  border: 1px solid #cfc5b2;
+  border-radius: 8px;
+  padding: 14px;
+  background: #fffdf8;
+}
+
+.focus-panel.overdue {
+  border-color: rgba(217, 87, 59, 0.45);
+  background: #fff6ef;
+}
+
+.focus-panel.complete {
+  border-color: rgba(44, 110, 99, 0.35);
+  background: #f4fbf6;
+}
+
+.focus-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.focus-panel h3,
+.focus-panel p {
+  margin: 0;
+}
+
+.focus-panel h3 {
+  margin-top: 8px;
+  font-size: 1.08rem;
+}
+
+.focus-head p,
+.focus-panel p {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.focus-head strong {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--ink);
+  background: #efe6d4;
+  font-size: 0.86rem;
+}
+
+.status-pill {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 9px;
+  color: white;
+  background: var(--green);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.overdue .status-pill {
+  background: var(--red);
+}
+
+.complete .status-pill {
+  background: var(--blue);
+}
+
+.focus-list {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--ink);
+}
+
+.focus-list li {
+  margin-top: 6px;
+  line-height: 1.35;
+}
+
+.focus-more {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
 .timeline {
   padding: 0 16px 18px;
   display: grid;
@@ -401,10 +491,15 @@ textarea:focus {
   .panel-heading,
   .summary-strip,
   .phase-card,
+  .focus-head,
   .two,
   .checkbox-grid,
   .inline-control {
     grid-template-columns: 1fr;
+  }
+
+  .focus-head {
+    display: grid;
   }
 
   .panel-heading {
