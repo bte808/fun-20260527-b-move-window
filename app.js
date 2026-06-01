@@ -455,6 +455,71 @@ function buildMarkdown() {
   return lines.join("\n").trim() + "\n";
 }
 
+function buildCalendar() {
+  const data = formData();
+  if (!data.moveDate) return "";
+
+  const moveDate = parseLocalDate(data.moveDate);
+  const groups = groupTasks(buildTasks(data), moveDate);
+  const route = [data.fromName, data.toName].filter(Boolean).join(" -> ");
+  const stamp = toIcsTimestamp(new Date());
+  const title = `Move Window: ${formatDate(moveDate)}`;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//bte808//Move Window//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    `X-WR-CALNAME:${escapeIcs(title)}`
+  ];
+
+  groups.forEach((group, index) => {
+    const doneCount = group.tasks.filter((task) => state.completed[taskKey(task, group.dueDate)]).length;
+    const taskLines = group.tasks.map((task) => {
+      const mark = state.completed[taskKey(task, group.dueDate)] ? "x" : " ";
+      return `- [${mark}] ${task.text}`;
+    });
+    const description = [
+      relativeLabel(group.dueDate, moveDate),
+      route ? `Route: ${route}` : "",
+      `Progress: ${doneCount}/${group.tasks.length}`,
+      "",
+      ...taskLines
+    ].filter((line, lineIndex, list) => line || list[lineIndex - 1] !== "");
+
+    lines.push(
+      "BEGIN:VEVENT",
+      `UID:move-window-${toIsoDate(group.dueDate)}-${index}@bte808.github.io`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${toIcsDate(group.dueDate)}`,
+      `DTEND;VALUE=DATE:${toIcsDate(addDays(group.dueDate, 1))}`,
+      `SUMMARY:${escapeIcs(`Move checklist: ${group.tasks.length} task${group.tasks.length === 1 ? "" : "s"}`)}`,
+      `DESCRIPTION:${escapeIcs(description.join("\n"))}`,
+      "END:VEVENT"
+    );
+  });
+
+  lines.push("END:VCALENDAR");
+  return `${lines.join("\r\n")}\r\n`;
+}
+
+function toIcsDate(date) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}`;
+}
+
+function toIcsTimestamp(date) {
+  return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+}
+
+function escapeIcs(value) {
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/\n/g, "\\n")
+    .replace(/,/g, "\\,")
+    .replace(/;/g, "\\;");
+}
+
 function labelFor(value) {
   return String(value).replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
@@ -485,6 +550,25 @@ function downloadPlan() {
   anchor.download = filename;
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+function downloadCalendar() {
+  const calendar = buildCalendar();
+  if (!calendar) {
+    flashButton("#calendar-button", "Pick date");
+    return;
+  }
+
+  const blob = new Blob([calendar], { type: "text/calendar" });
+  const data = formData();
+  const filename = `move-window-${data.moveDate}.ics`;
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+  flashButton("#calendar-button", "Saved");
 }
 
 function flashButton(selector, text) {
@@ -551,6 +635,7 @@ document.querySelector("#sample-button").addEventListener("click", setSample);
 document.querySelector("#reset-button").addEventListener("click", resetAll);
 document.querySelector("#copy-button").addEventListener("click", copyPlan);
 document.querySelector("#download-button").addEventListener("click", downloadPlan);
+document.querySelector("#calendar-button").addEventListener("click", downloadCalendar);
 document.querySelector("#print-button").addEventListener("click", () => window.print());
 document.querySelector("#add-custom-button").addEventListener("click", addCustomTask);
 customTaskInput.addEventListener("keydown", (event) => {

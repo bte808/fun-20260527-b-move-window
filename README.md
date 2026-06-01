@@ -2,6 +2,8 @@
 
 Move Window is a local-first moving checklist planner. Enter one move date, choose the pieces that apply, and it turns the date into a practical timeline with copy, print, download, and saved progress.
 
+Live demo: https://bte808.github.io/fun-20260527-b-move-window/
+
 ## Why it exists
 
 Moving checklists are useful, but they often live as long articles or generic PDFs. Move Window keeps the helpful part: one date goes in, a dated plan comes out, and you can keep checking items off in the browser.
@@ -21,6 +23,7 @@ Move Window does not copy another checklist verbatim. It uses its own compact ta
 - See the overdue or next checkpoint at the top of the plan.
 - Copy the whole plan as Markdown.
 - Download the plan as a Markdown file.
+- Download an `.ics` calendar with dated move checkpoints.
 - Print a clean checklist.
 - Run without accounts, secrets, analytics, or a server.
 
@@ -47,7 +50,7 @@ http://localhost:5197
 1. Pick the moving day.
 2. Select the move type, home size, and extra task packs.
 3. Review the dated timeline.
-4. Check off tasks, add custom tasks, copy the Markdown, download the plan, or print it.
+4. Check off tasks, add custom tasks, copy the Markdown, download the plan, export calendar checkpoints, or print it.
 
 ## Validation
 
@@ -62,7 +65,6 @@ The app has no runtime dependencies. Tests use Node's built-in test runner.
 
 ## Future ideas
 
-- Add calendar `.ics` export for the next few checkpoints.
 - Add import/export for saved progress.
 - Add a packing label sheet generator.
 - Add a one-page "move day command center" view.

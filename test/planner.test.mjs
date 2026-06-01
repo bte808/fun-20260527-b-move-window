@@ -26,6 +26,9 @@ test("default moving plan has a complete dated flow", () => {
 test("planner supports practical export and persistence actions", () => {
   assert.match(app, /function buildMarkdown/);
   assert.match(app, /function downloadPlan/);
+  assert.match(app, /function buildCalendar/);
+  assert.match(app, /function downloadCalendar/);
+  assert.match(app, /text\/calendar/);
   assert.match(app, /navigator\.clipboard/);
   assert.match(app, /localStorage\.setItem/);
 });
